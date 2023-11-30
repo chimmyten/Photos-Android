@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.sql.Array;
 import java.util.ArrayList;
 
-public class Album extends MainActivity{
+public class Album extends HomePage{
     ArrayList<PhotoModel> photoModelsArrayList = new ArrayList<>();
     int[] photos = {R.drawable.ic_launcher_foreground, R.drawable.ic_launcher_background};
     String albumName;
