@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".HomePage">
 
     <TextView
         android:id="@+id/textView"
@@ -13,7 +13,7 @@
         android:layout_height="42dp"
         android:layout_marginStart="28dp"
         android:layout_marginTop="16dp"
-        android:text="Albums"
+        android:text="@string/app_name"
         android:textAlignment="center"
         android:textSize="34sp"
         android:textStyle="bold"
@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="28dp"
         android:layout_marginTop="20dp"
-        android:text="Create"
+        android:text="@string/create_album"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
@@ -34,7 +34,7 @@
         android:id="@+id/renameAlbum"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Rename"
+        android:text="@string/rename_album"
         app:layout_constraintEnd_toStartOf="@+id/deleteAlbum"
         app:layout_constraintHorizontal_bias="0.493"
         app:layout_constraintStart_toEndOf="@+id/createAlbum"
@@ -45,7 +45,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="28dp"
-        android:text="Delete"
+        android:text="@string/delete_album"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/renameAlbum" />
 
