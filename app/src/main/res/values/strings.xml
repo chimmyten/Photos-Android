@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Photos</string>
+    <string name="cycle_left">&lt;</string>
+    <string name="cycle_right">&gt;</string>
+    <string name="add_tag">Add Tag</string>
+    <string name="remove_tag">Remove Tag</string>
+    <string name="move_photo">Move Photo</string>
+    <string name="caption_placeholder">Caption Placeholder</string>
 </resources>
