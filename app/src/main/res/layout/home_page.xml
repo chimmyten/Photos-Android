@@ -11,9 +11,9 @@
         android:id="@+id/textView"
         android:layout_width="128dp"
         android:layout_height="42dp"
-        android:layout_marginStart="28dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:text="Albums"
+        android:text="@string/albums"
         android:textAlignment="center"
         android:textSize="34sp"
         android:textStyle="bold"
@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="28dp"
         android:layout_marginTop="20dp"
-        android:text="Create"
+        android:text="@string/create"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
@@ -34,7 +34,7 @@
         android:id="@+id/renameAlbum"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Rename"
+        android:text="@string/rename"
         app:layout_constraintEnd_toStartOf="@+id/deleteAlbum"
         app:layout_constraintHorizontal_bias="0.493"
         app:layout_constraintStart_toEndOf="@+id/createAlbum"
@@ -45,16 +45,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="28dp"
-        android:text="Delete"
+        android:text="@string/delete"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/renameAlbum" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/albumList"
-        android:layout_width="409dp"
-        android:layout_height="603dp"
-        android:layout_marginTop="16dp"
+        android:layout_width="375dp"
+        android:layout_height="600dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/renameAlbum"
         app:layout_constraintVertical_bias="1.0" />

@@ -1,19 +1,21 @@
 package com.example.photos;
 
+import android.net.Uri;
+
 public class PhotoModel {
     String caption;
-    int image;
+    Uri photoURI;
 
-    public PhotoModel(String caption, int image) {
+    public PhotoModel(String caption, Uri photoURI) {
         this.caption = caption;
-        this.image = image;
+        this.photoURI = photoURI;
     }
 
     public String getCaption() {
         return caption;
     }
 
-    public int getImage() {
-        return image;
+    public Uri getPhotoURI() {
+        return photoURI;
     }
 }
