@@ -11,12 +11,13 @@ import android.widget.Button;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-public class AlbumViewActivity extends MainActivity implements album_recycler_view_interface{
+public class AlbumViewActivity extends AppCompatActivity implements album_recycler_view_interface{
     ArrayList<PhotoModel> photoModelsArrayList = new ArrayList<>(); //can be used for saved data later
     String albumName;
     private ActivityResultLauncher<Intent> pickImageLauncher;
