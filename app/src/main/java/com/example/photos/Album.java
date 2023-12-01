@@ -13,6 +13,9 @@ public class Album extends HomePage{
     int[] photos = {R.drawable.ic_launcher_foreground, R.drawable.ic_launcher_background};
     String albumName;
 
+    public Album(String name) {
+        this.albumName = name;
+    }
     @Override
     protected void onCreate(Bundle savedInstance){
         super.onCreate(savedInstance);
