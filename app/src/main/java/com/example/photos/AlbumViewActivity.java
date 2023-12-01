@@ -18,8 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 public class AlbumViewActivity extends AppCompatActivity implements album_recycler_view_interface{
-    ArrayList<PhotoModel> photoModelsArrayList = new ArrayList<>(); //can be used for saved data later
-    String albumName;
+    Album currentAlbum;
     private ActivityResultLauncher<Intent> pickImageLauncher;
 
     @Override
@@ -29,9 +28,8 @@ public class AlbumViewActivity extends AppCompatActivity implements album_recycl
 
         RecyclerView recyclerView = findViewById(R.id.photoRecyclerView);
 
-        setUpPhotos();
 
-        album_page_recycler_view_adapter adapter = new album_page_recycler_view_adapter(this, photoModelsArrayList, this);
+        album_page_recycler_view_adapter adapter = new album_page_recycler_view_adapter(this, currentAlbum.getPhotoModelsArrayList(), this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -44,6 +42,7 @@ public class AlbumViewActivity extends AppCompatActivity implements album_recycl
                         Uri imageUri = result.getData().getData();
                         String fileName = getFileNameFromUri(imageUri);
                         adapter.addPhoto(new PhotoModel(fileName, imageUri));
+                        currentAlbum.getPhotoModelsArrayList().add(new PhotoModel(fileName, imageUri));
                     }
                 });
 
@@ -51,11 +50,6 @@ public class AlbumViewActivity extends AppCompatActivity implements album_recycl
         pickImageButton.setOnClickListener(view -> openImagePicker());
     }
 
-    public void setUpPhotos(){
-
-//        photoModelsArrayList.add(new PhotoModel("potato1", photos[0]));
-
-    }
 
     @Override
     public void onPhotoClick(int position) {
