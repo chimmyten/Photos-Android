@@ -18,18 +18,23 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 public class AlbumViewActivity extends AppCompatActivity implements album_recycler_view_interface{
-    Album currentAlbum;
+    Album currentAlbum = new Album("n1");
     private ActivityResultLauncher<Intent> pickImageLauncher;
+    album_page_recycler_view_adapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstance){
         super.onCreate(savedInstance);
         setContentView(R.layout.activity_album_view);
 
+//        Album receivedAlbum = (Album) getIntent().getSerializableExtra("passedInAlbum");
+//
+//        currentAlbum = receivedAlbum;
+
         RecyclerView recyclerView = findViewById(R.id.photoRecyclerView);
 
 
-        album_page_recycler_view_adapter adapter = new album_page_recycler_view_adapter(this, currentAlbum.getPhotoModelsArrayList(), this);
+        adapter = new album_page_recycler_view_adapter(this, currentAlbum.getPhotoModelsArrayList(), this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -41,8 +46,9 @@ public class AlbumViewActivity extends AppCompatActivity implements album_recycl
                     if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
                         Uri imageUri = result.getData().getData();
                         String fileName = getFileNameFromUri(imageUri);
-                        adapter.addPhoto(new PhotoModel(fileName, imageUri));
                         currentAlbum.getPhotoModelsArrayList().add(new PhotoModel(fileName, imageUri));
+                        adapter.notifyOfAdd();
+
                     }
                 });
 
@@ -55,6 +61,12 @@ public class AlbumViewActivity extends AppCompatActivity implements album_recycl
     public void onPhotoClick(int position) {
         Intent intent = new Intent(this, PhotoViewActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void onDeleteClick(int position) {
+        currentAlbum.getPhotoModelsArrayList().remove(position);
+        adapter.notifyOfRemoval(position);
     }
 
     // Method to launch image picker

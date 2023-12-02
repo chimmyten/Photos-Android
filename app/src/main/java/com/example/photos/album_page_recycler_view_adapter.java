@@ -48,6 +48,7 @@ public class album_page_recycler_view_adapter extends RecyclerView.Adapter<album
         //similar to onCreate
 
         ImageView photo;
+        ImageView deleteButton;
         public MyViewHolder(@NonNull View itemView, album_recycler_view_interface albumRecyclerViewInterface) {
             super(itemView);
             photo = itemView.findViewById(R.id.imageView);
@@ -62,13 +63,27 @@ public class album_page_recycler_view_adapter extends RecyclerView.Adapter<album
                 }
             });
 
+            deleteButton = itemView.findViewById(R.id.deleteButton);
+            deleteButton.setOnClickListener(view -> {
+                if (albumRecyclerViewInterface != null) {
+                    int pos = getAdapterPosition();
+
+                    if (pos!=RecyclerView.NO_POSITION){
+                        albumRecyclerViewInterface.onDeleteClick(pos);
+                    }
+                }
+            });
+
         }
     }
 
 
-    public void addPhoto(PhotoModel newPhoto) {
-        photoModels.add(newPhoto);
+    public void notifyOfAdd() {
         notifyItemInserted(photoModels.size() - 1); // Notify adapter about the data change
+    }
+
+    public void notifyOfRemoval(int pos) {
+        notifyItemRemoved(pos);
     }
 
 }
