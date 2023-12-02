@@ -10,7 +10,8 @@
     <string name="back">Back</string>
     <string name="add_new_photo">Add New Photo</string>
     <string name="delete_photo">Delete Photo</string>
-    <string name="create_album">Create</string>
+    <string name="create_album">Create New Album</string>
     <string name="rename_album">Rename</string>
-    <string name="delete_album">Delete</string>
+    <string name="delete_album">X</string>
+    <string name="album_name_placeholder">AlbumName</string>
 </resources>

@@ -13,7 +13,7 @@
         android:layout_height="42dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:text="@string/app_name"
+        android:text="@string/albums"
         android:textAlignment="center"
         android:textSize="34sp"
         android:textStyle="bold"
@@ -21,45 +21,27 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/createAlbum"
+        android:id="@+id/createAlbumButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="28dp"
         android:layout_marginTop="20dp"
+        android:onClick="OnCreateAlbumClick"
         android:text="@string/create_album"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
-    <Button
-        android:id="@+id/renameAlbum"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/rename_album"
-        app:layout_constraintEnd_toStartOf="@+id/deleteAlbum"
-        app:layout_constraintHorizontal_bias="0.493"
-        app:layout_constraintStart_toEndOf="@+id/createAlbum"
-        app:layout_constraintTop_toTopOf="@+id/createAlbum" />
-
-    <Button
-        android:id="@+id/deleteAlbum"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="28dp"
-        android:text="@string/delete_album"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/renameAlbum" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/albumList"
-        android:layout_width="375dp"
-        android:layout_height="600dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="10dp"
+
+        android:layout_width="390dp"
+        android:layout_height="432dp"
+        android:layout_marginTop="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.476"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/renameAlbum"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/createAlbumButton"
+        app:layout_constraintVertical_bias="0.892" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -17,4 +17,8 @@ public class User {
     public List<Album> getAlbums() {
         return this.albums;
     }
+
+    public void deleteAlbum(int position) {
+        this.albums.remove(position);
+    }
 }
