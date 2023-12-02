@@ -1,21 +1,29 @@
 package com.example.photos;
 
 import android.net.Uri;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-public class PhotoModel {
+import androidx.annotation.NonNull;
+
+import java.io.Serializable;
+
+public class PhotoModel implements Serializable {
     String caption;
-    Uri photoURI;
+    String photoURI;
 
     public PhotoModel(String caption, Uri photoURI) {
         this.caption = caption;
-        this.photoURI = photoURI;
+        this.photoURI = photoURI.toString();
     }
 
     public String getCaption() {
         return caption;
     }
 
-    public Uri getPhotoURI() {
+    public String getPhotoURI() {
         return photoURI;
     }
+
+
 }

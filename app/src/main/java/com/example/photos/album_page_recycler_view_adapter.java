@@ -1,6 +1,7 @@
 package com.example.photos;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +35,7 @@ public class album_page_recycler_view_adapter extends RecyclerView.Adapter<album
     @Override
     public void onBindViewHolder(@NonNull album_page_recycler_view_adapter.MyViewHolder holder, int position) {
         //assign values to views we created in the recycler view based on position of recycler view
-        holder.photo.setImageURI(photoModels.get(position).getPhotoURI());
+        holder.photo.setImageURI(Uri.parse(photoModels.get(position).getPhotoURI()));
     }
 
     @Override

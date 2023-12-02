@@ -6,8 +6,10 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.provider.OpenableColumns;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -46,9 +48,12 @@ public class AlbumViewActivity extends AppCompatActivity implements album_recycl
                     if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
                         Uri imageUri = result.getData().getData();
                         String fileName = getFileNameFromUri(imageUri);
-                        currentAlbum.getPhotoModelsArrayList().add(new PhotoModel(fileName, imageUri));
-                        adapter.notifyOfAdd();
-
+                        if (!checkForPhoto(fileName)) {
+                            currentAlbum.getPhotoModelsArrayList().add(new PhotoModel(fileName, imageUri));
+                            adapter.notifyOfAdd();
+                        } else {
+                            Toast.makeText(getApplicationContext(), "That image already exists in this album", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
 
@@ -60,6 +65,8 @@ public class AlbumViewActivity extends AppCompatActivity implements album_recycl
     @Override
     public void onPhotoClick(int position) {
         Intent intent = new Intent(this, PhotoViewActivity.class);
+        intent.putExtra("album", currentAlbum);
+        intent.putExtra("photoIndex", position);
         startActivity(intent);
     }
 
@@ -87,11 +94,25 @@ public class AlbumViewActivity extends AppCompatActivity implements album_recycl
                     int displayNameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
                     if (displayNameIndex != -1) {
                         fileName = cursor.getString(displayNameIndex);
+                        // Remove file extension if present
+                        int extensionIndex = fileName.lastIndexOf(".");
+                        if (extensionIndex != -1) {
+                            fileName = fileName.substring(0, extensionIndex);
+                        }
                     }
                 }
             }
         }
         return fileName;
+    }
+
+    public boolean checkForPhoto(String fileName){
+        for (PhotoModel p : currentAlbum.photoModelsArrayList){
+            if (p.caption.equals(fileName)){
+                return true;
+            }
+        }
+        return false;
     }
 
 

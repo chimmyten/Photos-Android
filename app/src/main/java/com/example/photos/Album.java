@@ -1,8 +1,14 @@
 package com.example.photos;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Album {
+public class Album implements Serializable{
     ArrayList<PhotoModel> photoModelsArrayList = new ArrayList<>();
     String albumName;
 
@@ -25,4 +31,5 @@ public class Album {
     public void setAlbumName(String albumName) {
         this.albumName = albumName;
     }
+
 }
