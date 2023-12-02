@@ -18,6 +18,9 @@
             android:exported="false" />
         <activity
             android:name=".AlbumViewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".HomePage"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
