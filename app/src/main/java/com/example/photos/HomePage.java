@@ -26,7 +26,6 @@ public class HomePage extends AppCompatActivity {
         User user = new User();
 
         List<Album> albums = user.getAlbums();
-        albums.add(new Album("ALBUM"));
         RecyclerView albumList = findViewById(R.id.albumList);
         albumList.setLayoutManager(new LinearLayoutManager(this));
         AlbumListAdapter albumListAdapter = new AlbumListAdapter(getApplicationContext(), albums);
