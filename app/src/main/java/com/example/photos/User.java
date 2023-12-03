@@ -21,4 +21,8 @@ public class User {
     public void deleteAlbum(int position) {
         this.albums.remove(position);
     }
+
+    public void renameAlbum(int position, String name) {
+        this.albums.get(position).setAlbumName(name);
+    }
 }

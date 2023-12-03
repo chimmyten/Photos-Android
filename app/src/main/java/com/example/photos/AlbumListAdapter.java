@@ -14,6 +14,7 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListViewHolder> 
     Context context;
     List<Album> albums;
     deleteAlbumClickListener deleteAlbumListener;
+    renameAlbumClickListener renameAlbumListener;
 
     public interface deleteAlbumClickListener {
         void onItemClick(int position);
@@ -22,6 +23,15 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListViewHolder> 
     public void setOnDeleteAlbumClickListener(deleteAlbumClickListener clickListener) {
         deleteAlbumListener = clickListener;
     }
+
+    public interface renameAlbumClickListener {
+        void onRenameButtonClick(int position);
+    }
+
+    public void setOnRenameAlbumClickListener(renameAlbumClickListener clickListener) {
+        renameAlbumListener = clickListener;
+    }
+
     public AlbumListAdapter(Context context, List<Album> albums) {
         this.context = context;
         this.albums = albums;
@@ -30,7 +40,7 @@ public class AlbumListAdapter extends RecyclerView.Adapter<AlbumListViewHolder> 
     @Override
     public AlbumListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(context).inflate(R.layout.album_list_item_view, parent, false);
-        return new AlbumListViewHolder(v, deleteAlbumListener);
+        return new AlbumListViewHolder(v, deleteAlbumListener, renameAlbumListener);
     }
 
     @Override

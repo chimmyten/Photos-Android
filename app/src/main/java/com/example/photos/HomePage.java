@@ -33,8 +33,50 @@ public class HomePage extends AppCompatActivity {
         albumListAdapter.setOnDeleteAlbumClickListener(new AlbumListAdapter.deleteAlbumClickListener() {
             @Override
             public void onItemClick(int position) {
-                albums.remove(position);
+                user.deleteAlbum(position);
                 albumList.getAdapter().notifyItemRemoved(position);
+            }
+        });
+
+        albumListAdapter.setOnRenameAlbumClickListener(new AlbumListAdapter.renameAlbumClickListener() {
+            @Override
+            public void onRenameButtonClick(int position) {
+//                set up renaming logic
+                AlertDialog.Builder builder = new AlertDialog.Builder(HomePage.this);
+                builder.setTitle("Rename Album");
+
+                final EditText albumNameEditText = new EditText(HomePage.this);
+                albumNameEditText.setHint("Enter new album name");
+                builder.setView(albumNameEditText);
+
+                builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        String albumName = albumNameEditText.getText().toString().trim();
+                        if (!albumName.isEmpty()) {
+                            for (Album album : user.getAlbums()) {
+                                if (album.getAlbumName().equals(albumName)) {
+                                    Toast.makeText(HomePage.this, "Album name already used", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                            }
+                            // Rename the album
+                            user.renameAlbum(position, albumName);
+                            albumList.getAdapter().notifyItemChanged(position);
+                        } else {
+                            Toast.makeText(HomePage.this, "Please enter a valid album name", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                    }
+                });
+
+                builder.create().show();
             }
         });
 
@@ -52,11 +94,16 @@ public class HomePage extends AppCompatActivity {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         String albumName = albumNameEditText.getText().toString().trim();
                         if (!albumName.isEmpty()) {
+                            for (Album album : user.getAlbums()) {
+                                if (album.getAlbumName().equals(albumName)) {
+                                    Toast.makeText(HomePage.this, "Album name already used", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                            }
                             // Add a new album to the list
                             Album newAlbum = new Album(albumName);
-                            albums.add(newAlbum);
-                            int position = albums.indexOf(newAlbum);
-                            albumList.getAdapter().notifyItemInserted(position);
+                            user.addAlbum(newAlbum);
+                            albumList.getAdapter().notifyItemInserted(user.getAlbums().size()-1);
                             Log.d("Adapter", "Item count: " + albums.size());
                         } else {
                             Toast.makeText(HomePage.this, "Please enter a valid album name", Toast.LENGTH_SHORT).show();
