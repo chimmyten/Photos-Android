@@ -1,20 +1,30 @@
 package com.example.photos;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-public class PhotoViewActivity extends AppCompatActivity {
+public class PhotoViewActivity extends AppCompatActivity implements tag_recycler_view_interface{
 
     Album passedInAlbum;
     int photoPosition;
     PhotoModel photo;
+
+    String tagToAdd;
+
+    tag_recycler_view_adapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,15 +48,16 @@ public class PhotoViewActivity extends AppCompatActivity {
         imageView.setImageURI(Uri.parse(photo.getPhotoURI()));
 
         Button cycleLeftBtn = findViewById(R.id.cycleLeftButton);
-        cycleLeftBtn.setOnClickListener(view -> {
-            cycleImage(photoPosition, "left");
-        });
+        cycleLeftBtn.setOnClickListener(view -> cycleImage(photoPosition, "left"));
 
         Button cycleRightBtn = findViewById(R.id.cycleRightButton);
-        cycleRightBtn.setOnClickListener(view -> {
-            cycleImage(photoPosition, "right");
-        });
+        cycleRightBtn.setOnClickListener(view -> cycleImage(photoPosition, "right"));
 
+
+        RecyclerView recyclerView = findViewById(R.id.tagRecyclerView);
+        adapter = new tag_recycler_view_adapter(this, photo.getTagList(), this);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
 
@@ -71,5 +82,41 @@ public class PhotoViewActivity extends AppCompatActivity {
 
         ImageView imageView = findViewById((R.id.imageView));
         imageView.setImageURI(Uri.parse(photo.getPhotoURI()));
+    }
+
+    @Override
+    public void onDeleteTagClick(int position) {
+        photo.getTagList().remove(position);
+        Toast.makeText(getApplicationContext(), "Tag Deleted!", Toast.LENGTH_SHORT).show();
+        adapter.notifyOfRemoval(position);
+    }
+
+
+    public void openPopup(View view) {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.tag_input_popup, null);
+        alertDialogBuilder.setView(dialogView);
+
+        final EditText userInput = dialogView.findViewById(R.id.userInput);
+
+        alertDialogBuilder
+                .setTitle("Enter Tag To Add")
+                .setPositiveButton("OK", (dialog, id) -> {
+                    tagToAdd = userInput.getText().toString();
+                    String[] split = tagToAdd.split("=",2);
+                    if (split.length!=2||(!split[0].equals("Location")&&!split[0].equals("People"))||split[1].equals("")){
+                        Toast.makeText(getApplicationContext(), "Wrong tag input format, please try again", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Success!", Toast.LENGTH_SHORT).show();
+                        photo.getTagList().add(tagToAdd);
+                        adapter.notifyOfAdd();
+                    }
+
+                })
+                .setNegativeButton("Cancel", (dialog, id) -> dialog.cancel());
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
     }
 }

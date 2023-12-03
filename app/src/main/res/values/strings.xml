@@ -3,7 +3,6 @@
     <string name="cycle_left">&lt;</string>
     <string name="cycle_right">&gt;</string>
     <string name="add_tag">Add Tag</string>
-    <string name="remove_tag">Remove Tag</string>
     <string name="move_photo">Move Photo</string>
     <string name="caption_placeholder">Caption Placeholder</string>
     <string name="albums">Albums</string>
@@ -14,4 +13,8 @@
     <string name="rename_album">Rename</string>
     <string name="delete_album">X</string>
     <string name="album_name_placeholder">AlbumName</string>
+    <string name="scrollable_tag_list">Scrollable Tag List</string>
+    <string name="tag_format_hint">(Format is [tagType]=value where tagType equals Location or People)</string>
+    <string name="type_tag_here">Type Tag Here</string>
+
 </resources>

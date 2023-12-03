@@ -7,10 +7,15 @@ import android.os.Parcelable;
 import androidx.annotation.NonNull;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PhotoModel implements Serializable {
     String caption;
     String photoURI;
+
+    List<String> tagsList = new ArrayList<>();
+
 
     public PhotoModel(String caption, Uri photoURI) {
         this.caption = caption;
@@ -25,5 +30,15 @@ public class PhotoModel implements Serializable {
         return photoURI;
     }
 
+    public List<String> getTagList(){
+        return tagsList;
+    }
+    public void addLocationTag(String newTag){
+        tagsList.add("Location: ="+newTag);
+    }
+
+    public void addPeopleTag(String newTag){
+        tagsList.add("People: ="+newTag);
+    }
 
 }
