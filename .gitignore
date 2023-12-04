@@ -65,4 +65,5 @@ Thumbs.db
 .externalNativeBuild
 .cxx
 local.properties
+.bashrc
 >>>>>>> 7690413 (initial commit)
