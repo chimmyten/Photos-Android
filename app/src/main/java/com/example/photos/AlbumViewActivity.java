@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.provider.OpenableColumns;
+import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -20,7 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 public class AlbumViewActivity extends AppCompatActivity implements album_recycler_view_interface{
-    Album currentAlbum = new Album("n1");
+    Album currentAlbum;
     private ActivityResultLauncher<Intent> pickImageLauncher;
     album_page_recycler_view_adapter adapter;
 
@@ -38,6 +39,13 @@ public class AlbumViewActivity extends AppCompatActivity implements album_recycl
         adapter = new album_page_recycler_view_adapter(this, currentAlbum.getPhotoModelsArrayList(), this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        Button backButton = findViewById(R.id.backToHomeButton);
+
+        backButton.setOnClickListener(view -> {
+            finish();
+        });
+
 
         Button pickImageButton = findViewById(R.id.addNewPhotoButton);
 
