@@ -29,9 +29,8 @@ public class AlbumViewActivity extends AppCompatActivity implements album_recycl
         super.onCreate(savedInstance);
         setContentView(R.layout.activity_album_view);
 
-//        Album receivedAlbum = (Album) getIntent().getSerializableExtra("passedInAlbum");
-//
-//        currentAlbum = receivedAlbum;
+        Album receivedAlbum = (Album) getIntent().getSerializableExtra("clickedAlbum");
+        currentAlbum = receivedAlbum;
 
         RecyclerView recyclerView = findViewById(R.id.photoRecyclerView);
 

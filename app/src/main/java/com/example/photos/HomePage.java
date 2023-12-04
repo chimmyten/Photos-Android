@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -77,6 +78,15 @@ public class HomePage extends AppCompatActivity {
                 });
 
                 builder.create().show();
+            }
+        });
+
+        albumListAdapter.setOpenAlbumClickListener(new AlbumListAdapter.openAlbumClickListener() {
+            @Override
+            public void onAlbumClick(int position) {
+                Intent intent = new Intent(HomePage.this, AlbumViewActivity.class);
+                intent.putExtra("clickedAlbum", user.getAlbums().get(position));
+                startActivity(intent);
             }
         });
 
