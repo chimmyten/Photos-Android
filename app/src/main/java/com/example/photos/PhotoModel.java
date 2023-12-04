@@ -33,12 +33,9 @@ public class PhotoModel implements Serializable {
     public List<String> getTagList(){
         return tagsList;
     }
-    public void addLocationTag(String newTag){
-        tagsList.add("Location: ="+newTag);
+    public void addTag(String newTag){
+        tagsList.add(newTag);
     }
 
-    public void addPeopleTag(String newTag){
-        tagsList.add("People: ="+newTag);
-    }
 
 }

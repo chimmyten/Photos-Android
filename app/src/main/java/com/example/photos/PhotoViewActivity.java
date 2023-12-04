@@ -24,6 +24,7 @@ public class PhotoViewActivity extends AppCompatActivity implements tag_recycler
 
     String tagToAdd;
 
+    RecyclerView recyclerView;
     tag_recycler_view_adapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +55,7 @@ public class PhotoViewActivity extends AppCompatActivity implements tag_recycler
         cycleRightBtn.setOnClickListener(view -> cycleImage(photoPosition, "right"));
 
 
-        RecyclerView recyclerView = findViewById(R.id.tagRecyclerView);
+        recyclerView = findViewById(R.id.tagRecyclerView);
         adapter = new tag_recycler_view_adapter(this, photo.getTagList(), this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -82,6 +83,10 @@ public class PhotoViewActivity extends AppCompatActivity implements tag_recycler
 
         ImageView imageView = findViewById((R.id.imageView));
         imageView.setImageURI(Uri.parse(photo.getPhotoURI()));
+
+        adapter = new tag_recycler_view_adapter(this, photo.getTagList(), this);
+        recyclerView.setAdapter(adapter);
+
     }
 
     @Override
@@ -105,11 +110,11 @@ public class PhotoViewActivity extends AppCompatActivity implements tag_recycler
                 .setPositiveButton("OK", (dialog, id) -> {
                     tagToAdd = userInput.getText().toString();
                     String[] split = tagToAdd.split("=",2);
-                    if (split.length!=2||(!split[0].equals("Location")&&!split[0].equals("People"))||split[1].equals("")){
-                        Toast.makeText(getApplicationContext(), "Wrong tag input format, please try again", Toast.LENGTH_SHORT).show();
+                    if (split.length!=2||(!split[0].equals("Location")&&!split[0].equals("People"))||split[1].equals("")||passedInAlbum.getPhotoModelsArrayList().get(photoPosition).getTagList().contains(tagToAdd)){
+                        Toast.makeText(getApplicationContext(), "Wrong tag input format or duplicate tag, please try again", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(getApplicationContext(), "Success!", Toast.LENGTH_SHORT).show();
-                        photo.getTagList().add(tagToAdd);
+                        photo.addTag(tagToAdd);
                         adapter.notifyOfAdd();
                     }
 
