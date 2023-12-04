@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -80,6 +81,15 @@ public class HomePage extends AppCompatActivity {
             }
         });
 
+        albumListAdapter.setOpenAlbumClickListener(new AlbumListAdapter.openAlbumClickListener() {
+            @Override
+            public void onAlbumClick(int position) {
+                Intent intent = new Intent(HomePage.this, AlbumViewActivity.class);
+                intent.putExtra("clickedAlbum", user.getAlbums().get(position));
+                startActivity(intent);
+            }
+        });
+
         Button createAlbumButton = findViewById(R.id.createAlbumButton);
         createAlbumButton.setOnClickListener((view) -> {
                 AlertDialog.Builder builder = new AlertDialog.Builder(HomePage.this);
@@ -104,7 +114,6 @@ public class HomePage extends AppCompatActivity {
                             Album newAlbum = new Album(albumName);
                             user.addAlbum(newAlbum);
                             albumList.getAdapter().notifyItemInserted(user.getAlbums().size()-1);
-                            Log.d("Adapter", "Item count: " + albums.size());
                         } else {
                             Toast.makeText(HomePage.this, "Please enter a valid album name", Toast.LENGTH_SHORT).show();
                         }

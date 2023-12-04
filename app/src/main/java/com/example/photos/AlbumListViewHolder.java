@@ -14,7 +14,8 @@ public class AlbumListViewHolder extends RecyclerView.ViewHolder {
     Button button;
     public AlbumListViewHolder(@NonNull View itemView,
                                AlbumListAdapter.deleteAlbumClickListener deleteAlbumListener,
-                               AlbumListAdapter.renameAlbumClickListener renameAlbumListener) {
+                               AlbumListAdapter.renameAlbumClickListener renameAlbumListener,
+                               AlbumListAdapter.openAlbumClickListener openAlbumListener) {
         super(itemView);
         textView = itemView.findViewById(R.id.albumListItemName);
         imageView = itemView.findViewById(R.id.deleteAlbum);
@@ -28,6 +29,12 @@ public class AlbumListViewHolder extends RecyclerView.ViewHolder {
         imageView.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 deleteAlbumListener.onItemClick(getAdapterPosition());
+            }
+        });
+
+        textView.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                openAlbumListener.onAlbumClick(getAdapterPosition());
             }
         });
     }
