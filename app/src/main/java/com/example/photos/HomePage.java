@@ -114,7 +114,6 @@ public class HomePage extends AppCompatActivity {
                             Album newAlbum = new Album(albumName);
                             user.addAlbum(newAlbum);
                             albumList.getAdapter().notifyItemInserted(user.getAlbums().size()-1);
-                            Log.d("Adapter", "Item count: " + albums.size());
                         } else {
                             Toast.makeText(HomePage.this, "Please enter a valid album name", Toast.LENGTH_SHORT).show();
                         }
