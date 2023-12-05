@@ -84,7 +84,7 @@ public class HomePage extends AppCompatActivity {
             @Override
             public void onAlbumClick(int position) {
                 Intent intent = new Intent(HomePage.this, AlbumViewActivity.class);
-                intent.putExtra("clickedAlbum", user.getAlbums().get(position));
+                intent.putExtra("clickedAlbumPos", position);
                 startActivity(intent);
             }
         });

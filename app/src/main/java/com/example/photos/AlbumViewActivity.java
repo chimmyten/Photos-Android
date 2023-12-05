@@ -3,6 +3,7 @@ package com.example.photos;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,6 +22,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 public class AlbumViewActivity extends AppCompatActivity implements album_recycler_view_interface{
+
+    int albumIndex;
     Album currentAlbum;
     private ActivityResultLauncher<Intent> pickImageLauncher;
     album_page_recycler_view_adapter adapter;
@@ -29,9 +32,11 @@ public class AlbumViewActivity extends AppCompatActivity implements album_recycl
     protected void onCreate(Bundle savedInstance){
         super.onCreate(savedInstance);
         setContentView(R.layout.activity_album_view);
+        Intent intent = getIntent();
+        UserSingleton user = UserSingleton.getInstance();
+        albumIndex = intent.getIntExtra("clickedAlbumPos", 0);
 
-        currentAlbum = (Album) getIntent().getSerializableExtra("clickedAlbum");
-
+        currentAlbum = user.getAlbums().get(albumIndex);
         RecyclerView recyclerView = findViewById(R.id.photoRecyclerView);
 
 
@@ -55,6 +60,11 @@ public class AlbumViewActivity extends AppCompatActivity implements album_recycl
                         Uri imageUri = result.getData().getData();
                         String fileName = getFileNameFromUri(imageUri);
                         if (!checkForPhoto(fileName)) {
+                            ContentResolver contentResolver = getContentResolver();
+                            // Take persistable URI permission for the image
+                            contentResolver.takePersistableUriPermission(imageUri,
+                                    Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+
                             currentAlbum.getPhotoModelsArrayList().add(new PhotoModel(fileName, imageUri));
                             adapter.notifyOfAdd();
                         } else {
@@ -71,8 +81,9 @@ public class AlbumViewActivity extends AppCompatActivity implements album_recycl
     @Override
     public void onPhotoClick(int position) {
         Intent intent = new Intent(this, PhotoViewActivity.class);
-        intent.putExtra("album", currentAlbum);
+//        intent.putExtra("album", currentAlbum);
         intent.putExtra("photoIndex", position);
+        intent.putExtra("albumIndex", albumIndex);
         startActivity(intent);
     }
 

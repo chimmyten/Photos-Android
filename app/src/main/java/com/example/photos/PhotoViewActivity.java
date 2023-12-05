@@ -13,26 +13,38 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PhotoViewActivity extends AppCompatActivity implements tag_recycler_view_interface{
 
     Album passedInAlbum;
     int photoPosition;
+    int albumPosition;
     PhotoModel photo;
 
     String tagToAdd;
+    UserSingleton user;
 
     RecyclerView recyclerView;
     tag_recycler_view_adapter adapter;
+    Album toMoveTo;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo_view);
         Intent intent = getIntent();
-        passedInAlbum = intent.getParcelableExtra("album", Album.class);
+        user = UserSingleton.getInstance();
+//        passedInAlbum = intent.getParcelableExtra("album", Album.class);
         photoPosition = intent.getIntExtra("photoIndex", 0);
+        albumPosition = intent.getIntExtra("albumIndex", 0);
+        passedInAlbum = user.getAlbums().get(albumPosition);
+
         photo = passedInAlbum.getPhotoModelsArrayList().get(photoPosition);
 
         Button backButton = findViewById(R.id.back_button);
@@ -60,7 +72,6 @@ public class PhotoViewActivity extends AppCompatActivity implements tag_recycler
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
-
 
     public void cycleImage(int initialPos, String cycleType){
         if (cycleType.equals("left")){
@@ -123,5 +134,62 @@ public class PhotoViewActivity extends AppCompatActivity implements tag_recycler
 
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
+    }
+
+
+
+    public void showAlbumsMenu(View view) {
+        List<String> albumNames = new ArrayList<>();
+        for (Album a : user.getAlbums()) {
+            if (!a.albumName.equals(passedInAlbum.albumName)) {
+                albumNames.add(a.albumName);
+            }
+        }
+
+        if (albumNames.size() == 0) {
+            Toast.makeText(PhotoViewActivity.this, "No other albums to move photo to!", Toast.LENGTH_SHORT).show();
+        } else {
+
+
+            PopupMenu popupMenu = new PopupMenu(this, view);
+            for (String option : albumNames) {
+                popupMenu.getMenu().add(option);
+            }
+
+            popupMenu.setOnMenuItemClickListener(item -> {
+                // Handle item click
+                String selectedAlbum = item.getTitle().toString();
+                for (Album a : user.getAlbums()) {
+                    if (a.albumName.equals(selectedAlbum)) {
+                        toMoveTo = a;
+                    }
+                }
+                boolean existsInAlbum = false;
+                for (PhotoModel p : toMoveTo.getPhotoModelsArrayList()) {
+                    if (p.getPhotoURI().equals(photo.getPhotoURI())) {
+                        existsInAlbum = true;
+                        break;
+                    }
+                }
+
+                if (!existsInAlbum) {
+                    toMoveTo.getPhotoModelsArrayList().add(photo);
+                    passedInAlbum.getPhotoModelsArrayList().remove(photo);
+                    Toast.makeText(PhotoViewActivity.this, "Successfully moved to " + selectedAlbum + "!", Toast.LENGTH_SHORT).show();
+                    adapter.notifyOfRemoval(photoPosition);
+                    if (passedInAlbum.getPhotoModelsArrayList().size() == 0) {
+                        finish();
+                    } else {
+                        cycleImage(photoPosition, "left");
+                    }
+                } else {
+                    Toast.makeText(PhotoViewActivity.this, "Photo already exists in that album, try again! " + selectedAlbum + "!", Toast.LENGTH_SHORT).show();
+                }
+
+                return true;
+            });
+
+            popupMenu.show();
+        }
     }
 }
