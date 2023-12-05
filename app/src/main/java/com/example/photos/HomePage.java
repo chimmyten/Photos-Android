@@ -23,8 +23,7 @@ public class HomePage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_page);
 
-//        For now, creates a new User everytime
-        User user = new User();
+        UserSingleton user = UserSingleton.getInstance();
 
         List<Album> albums = user.getAlbums();
         RecyclerView albumList = findViewById(R.id.albumList);
