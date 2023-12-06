@@ -3,9 +3,13 @@ import android.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.SearchView;
 import android.widget.Toast;
@@ -146,15 +150,18 @@ public class HomePage extends AppCompatActivity implements album_recycler_view_i
             if (canSwitchToAlbums){
                 recyclerView.setAdapter(albumListAdapter);
                 canSwitchToAlbums = false;
+                searchView.setQuery("", false);
                 searchView.setIconified(true);
                 // Optionally, clear the query text
-                searchView.setQuery("", false);
+                searchView.clearFocus();
             } else {
                 Toast.makeText(getApplicationContext(), "Already viewing albums!", Toast.LENGTH_SHORT).show();
             }
         });
 
         searchView.setOnSearchClickListener(v -> {
+
+            Log.d("SEARCHBAR", "search clicked");
             if (!canSwitchToAlbums){
                 canSwitchToAlbums = true;
                 filteredPhotos.clear();
@@ -163,8 +170,8 @@ public class HomePage extends AppCompatActivity implements album_recycler_view_i
                         filteredPhotos.add(p);
                     }
                 }
-                recyclerView.setAdapter(adapterFilteredPhotos);
             }
+            recyclerView.setAdapter(adapterFilteredPhotos);
         });
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
