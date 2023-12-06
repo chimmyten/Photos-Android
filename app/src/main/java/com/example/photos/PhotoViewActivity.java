@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -28,7 +29,7 @@ public class PhotoViewActivity extends AppCompatActivity implements tag_recycler
     PhotoModel photo;
 
     String tagToAdd;
-    UserSingleton user;
+    User user;
 
     RecyclerView recyclerView;
     tag_recycler_view_adapter adapter;
@@ -39,7 +40,7 @@ public class PhotoViewActivity extends AppCompatActivity implements tag_recycler
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo_view);
         Intent intent = getIntent();
-        user = UserSingleton.getInstance();
+        user = User.loadUser(getApplicationContext());
 //        passedInAlbum = intent.getParcelableExtra("album", Album.class);
         photoPosition = intent.getIntExtra("photoIndex", 0);
         albumPosition = intent.getIntExtra("albumIndex", 0);
@@ -50,6 +51,10 @@ public class PhotoViewActivity extends AppCompatActivity implements tag_recycler
         Button backButton = findViewById(R.id.back_button);
 
         backButton.setOnClickListener(view -> {
+            Intent intent2 = new Intent(PhotoViewActivity.this, AlbumViewActivity.class);
+            intent2.putExtra("clickedAlbumPos", albumPosition);
+            Log.d("poopposition", "position: " + albumPosition);
+            startActivity(intent2);
             // Finish the current activity to return to the previous one
             finish();
         });
@@ -103,6 +108,7 @@ public class PhotoViewActivity extends AppCompatActivity implements tag_recycler
     @Override
     public void onDeleteTagClick(int position) {
         photo.getTagList().remove(position);
+        user.saveUser(getApplicationContext());
         Toast.makeText(getApplicationContext(), "Tag Deleted!", Toast.LENGTH_SHORT).show();
         adapter.notifyOfRemoval(position);
     }
@@ -126,6 +132,7 @@ public class PhotoViewActivity extends AppCompatActivity implements tag_recycler
                     } else {
                         Toast.makeText(getApplicationContext(), "Success!", Toast.LENGTH_SHORT).show();
                         photo.addTag(tagToAdd);
+                        user.saveUser(getApplicationContext());
                         adapter.notifyOfAdd();
                     }
 
@@ -176,9 +183,14 @@ public class PhotoViewActivity extends AppCompatActivity implements tag_recycler
                     toMoveTo.getPhotoModelsArrayList().add(photo);
                     passedInAlbum.getPhotoModelsArrayList().remove(photo);
                     Toast.makeText(PhotoViewActivity.this, "Successfully moved to " + selectedAlbum + "!", Toast.LENGTH_SHORT).show();
-                    adapter.notifyOfRemoval(photoPosition);
+                    user.saveUser(getApplicationContext());
                     if (passedInAlbum.getPhotoModelsArrayList().size() == 0) {
+                        Intent intent = new Intent(PhotoViewActivity.this, AlbumViewActivity.class);
+                        intent.putExtra("clickedAlbumPos", albumPosition);
+                        startActivity(intent);
+
                         finish();
+
                     } else {
                         cycleImage(photoPosition, "left");
                     }

@@ -17,23 +17,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HomePage extends AppCompatActivity {
+    User user;
+    AlbumListAdapter albumListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_page);
 
-        UserSingleton user = UserSingleton.getInstance();
+
+        user = User.loadUser(getApplicationContext());
 
         List<Album> albums = user.getAlbums();
         RecyclerView albumList = findViewById(R.id.albumList);
         albumList.setLayoutManager(new LinearLayoutManager(this));
-        AlbumListAdapter albumListAdapter = new AlbumListAdapter(getApplicationContext(), albums);
+        albumListAdapter = new AlbumListAdapter(getApplicationContext(), albums);
         albumList.setAdapter(albumListAdapter);
         albumListAdapter.setOnDeleteAlbumClickListener(new AlbumListAdapter.deleteAlbumClickListener() {
             @Override
             public void onItemClick(int position) {
                 user.deleteAlbum(position);
+                user.saveUser(getApplicationContext());
                 albumList.getAdapter().notifyItemRemoved(position);
             }
         });
@@ -62,6 +66,7 @@ public class HomePage extends AppCompatActivity {
                             }
                             // Rename the album
                             user.renameAlbum(position, albumName);
+                            user.saveUser(getApplicationContext());
                             albumList.getAdapter().notifyItemChanged(position);
                         } else {
                             Toast.makeText(HomePage.this, "Please enter a valid album name", Toast.LENGTH_SHORT).show();
@@ -85,7 +90,10 @@ public class HomePage extends AppCompatActivity {
             public void onAlbumClick(int position) {
                 Intent intent = new Intent(HomePage.this, AlbumViewActivity.class);
                 intent.putExtra("clickedAlbumPos", position);
+                Log.d("poopposition", "position: " + position);
                 startActivity(intent);
+
+                finish();
             }
         });
 
@@ -112,6 +120,7 @@ public class HomePage extends AppCompatActivity {
                             // Add a new album to the list
                             Album newAlbum = new Album(albumName);
                             user.addAlbum(newAlbum);
+                            user.saveUser(getApplicationContext());
                             albumList.getAdapter().notifyItemInserted(user.getAlbums().size()-1);
                         } else {
                             Toast.makeText(HomePage.this, "Please enter a valid album name", Toast.LENGTH_SHORT).show();

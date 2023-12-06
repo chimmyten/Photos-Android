@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.provider.OpenableColumns;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -27,13 +28,14 @@ public class AlbumViewActivity extends AppCompatActivity implements album_recycl
     Album currentAlbum;
     private ActivityResultLauncher<Intent> pickImageLauncher;
     album_page_recycler_view_adapter adapter;
+    User user;
 
     @Override
     protected void onCreate(Bundle savedInstance){
         super.onCreate(savedInstance);
         setContentView(R.layout.activity_album_view);
         Intent intent = getIntent();
-        UserSingleton user = UserSingleton.getInstance();
+        user = User.loadUser(getApplicationContext());
         albumIndex = intent.getIntExtra("clickedAlbumPos", 0);
 
         currentAlbum = user.getAlbums().get(albumIndex);
@@ -47,6 +49,8 @@ public class AlbumViewActivity extends AppCompatActivity implements album_recycl
         Button backButton = findViewById(R.id.backToHomeButton);
 
         backButton.setOnClickListener(view -> {
+            Intent intent2 = new Intent(AlbumViewActivity.this, HomePage.class);
+            startActivity(intent2);
             finish();
         });
 
@@ -66,6 +70,7 @@ public class AlbumViewActivity extends AppCompatActivity implements album_recycl
                                     Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 
                             currentAlbum.getPhotoModelsArrayList().add(new PhotoModel(fileName, imageUri));
+                            user.saveUser(getApplicationContext());
                             adapter.notifyOfAdd();
                         } else {
                             Toast.makeText(getApplicationContext(), "That image already exists in this album", Toast.LENGTH_SHORT).show();
@@ -77,7 +82,6 @@ public class AlbumViewActivity extends AppCompatActivity implements album_recycl
         pickImageButton.setOnClickListener(view -> openImagePicker());
     }
 
-
     @Override
     public void onPhotoClick(int position) {
         Intent intent = new Intent(this, PhotoViewActivity.class);
@@ -85,11 +89,13 @@ public class AlbumViewActivity extends AppCompatActivity implements album_recycl
         intent.putExtra("photoIndex", position);
         intent.putExtra("albumIndex", albumIndex);
         startActivity(intent);
+        finish();
     }
 
     @Override
     public void onDeleteClick(int position) {
         currentAlbum.getPhotoModelsArrayList().remove(position);
+        user.saveUser(getApplicationContext());
         adapter.notifyOfRemoval(position);
     }
 
@@ -131,6 +137,4 @@ public class AlbumViewActivity extends AppCompatActivity implements album_recycl
         }
         return false;
     }
-
-
 }

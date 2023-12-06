@@ -12,6 +12,7 @@ public class Album implements Serializable{
     ArrayList<PhotoModel> photoModelsArrayList = new ArrayList<>();
     String albumName;
 
+
     public Album(String albumName) {
         this.albumName = albumName;
     }
