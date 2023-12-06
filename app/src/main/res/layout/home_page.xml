@@ -24,7 +24,7 @@
         android:id="@+id/createAlbumButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="28dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="20dp"
         android:onClick="OnCreateAlbumClick"
         android:text="@string/create_album"
@@ -34,14 +34,42 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/albumList"
 
-        android:layout_width="390dp"
-        android:layout_height="432dp"
+        android:layout_width="351dp"
+        android:layout_height="213dp"
         android:layout_marginTop="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.476"
+        app:layout_constraintHorizontal_bias="0.25"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/createAlbumButton"
-        app:layout_constraintVertical_bias="0.892" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.269" />
+
+    <SearchView
+        android:id="@+id/photoFilterSearch"
+        android:layout_width="361dp"
+        android:layout_height="34dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="76dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/albumList" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/filteredPhotosRecyclerView"
+        android:layout_width="350dp"
+        android:layout_height="225dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/FilterHint"
+        android:layout_width="357dp"
+        android:layout_height="47dp"
+        android:layout_marginStart="19dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/filter_photos_hint"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/albumList" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

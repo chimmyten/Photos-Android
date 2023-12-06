@@ -6,17 +6,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 import android.widget.Button;
+import android.widget.SearchView;
 import android.widget.Toast;
 import android.widget.EditText;
-import android.view.View.OnClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomePage extends AppCompatActivity {
+public class HomePage extends AppCompatActivity implements album_recycler_view_interface {
+    album_page_recycler_view_adapter adapter;
+    ArrayList<PhotoModel> filteredPhotos = new ArrayList<>();
     User user;
     AlbumListAdapter albumListAdapter;
 
@@ -90,7 +90,6 @@ public class HomePage extends AppCompatActivity {
             public void onAlbumClick(int position) {
                 Intent intent = new Intent(HomePage.this, AlbumViewActivity.class);
                 intent.putExtra("clickedAlbumPos", position);
-                Log.d("poopposition", "position: " + position);
                 startActivity(intent);
 
                 finish();
@@ -137,5 +136,47 @@ public class HomePage extends AppCompatActivity {
 
                 builder.create().show();
         });
+
+
+
+
+        SearchView searchView = findViewById(R.id.photoFilterSearch);
+        RecyclerView recyclerView = findViewById(R.id.filteredPhotosRecyclerView);
+
+
+        adapter = new album_page_recycler_view_adapter(this, filteredPhotos, this);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                // Perform search when user submits query
+                performSearch(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                performSearch(newText);
+                return true;
+            }
+        });
+    }
+
+    void performSearch(String query) {
+//        for (Album a : user)
+    }
+
+    @Override
+    public void onPhotoClick(int position) {
+
+    }
+
+    @Override
+    public void onDeleteClick(int position) {
+
     }
 }
+
+
