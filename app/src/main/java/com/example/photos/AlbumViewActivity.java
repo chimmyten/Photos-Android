@@ -12,6 +12,7 @@ import android.provider.OpenableColumns;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -39,6 +40,8 @@ public class AlbumViewActivity extends AppCompatActivity implements album_recycl
         albumIndex = intent.getIntExtra("clickedAlbumPos", 0);
 
         currentAlbum = user.getAlbums().get(albumIndex);
+        TextView albumName = findViewById(R.id.albumName);
+        albumName.setText(currentAlbum.getAlbumName());
         RecyclerView recyclerView = findViewById(R.id.photoRecyclerView);
 
 
