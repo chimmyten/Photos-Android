@@ -69,7 +69,7 @@ public class AlbumViewActivity extends AppCompatActivity implements album_recycl
                             contentResolver.takePersistableUriPermission(imageUri,
                                     Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 
-                            currentAlbum.getPhotoModelsArrayList().add(new PhotoModel(fileName, imageUri));
+                            currentAlbum.getPhotoModelsArrayList().add(new PhotoModel(fileName, imageUri, currentAlbum.getAlbumName()));
                             user.saveUser(getApplicationContext());
                             adapter.notifyOfAdd();
                         } else {
@@ -85,7 +85,6 @@ public class AlbumViewActivity extends AppCompatActivity implements album_recycl
     @Override
     public void onPhotoClick(int position) {
         Intent intent = new Intent(this, PhotoViewActivity.class);
-//        intent.putExtra("album", currentAlbum);
         intent.putExtra("photoIndex", position);
         intent.putExtra("albumIndex", albumIndex);
         startActivity(intent);

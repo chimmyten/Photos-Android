@@ -16,10 +16,12 @@ public class PhotoModel implements Serializable {
 
     List<String> tagsList = new ArrayList<>();
 
+    String albumName;
 
-    public PhotoModel(String caption, Uri photoURI) {
+    public PhotoModel(String caption, Uri photoURI, String albumName) {
         this.caption = caption;
         this.photoURI = photoURI.toString();
+        this.albumName = albumName;
     }
 
     public String getCaption() {

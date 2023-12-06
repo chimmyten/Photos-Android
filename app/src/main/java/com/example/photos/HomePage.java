@@ -15,10 +15,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HomePage extends AppCompatActivity implements album_recycler_view_interface {
-    album_page_recycler_view_adapter adapter;
+    album_page_recycler_view_adapter adapterFilteredPhotos;
     ArrayList<PhotoModel> filteredPhotos = new ArrayList<>();
     User user;
     AlbumListAdapter albumListAdapter;
+
+    boolean canSwitchToAlbums = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,16 +32,16 @@ public class HomePage extends AppCompatActivity implements album_recycler_view_i
         user = User.loadUser(getApplicationContext());
 
         List<Album> albums = user.getAlbums();
-        RecyclerView albumList = findViewById(R.id.albumList);
-        albumList.setLayoutManager(new LinearLayoutManager(this));
+        RecyclerView recyclerView = findViewById(R.id.albumList);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         albumListAdapter = new AlbumListAdapter(getApplicationContext(), albums);
-        albumList.setAdapter(albumListAdapter);
+        recyclerView.setAdapter(albumListAdapter);
         albumListAdapter.setOnDeleteAlbumClickListener(new AlbumListAdapter.deleteAlbumClickListener() {
             @Override
             public void onItemClick(int position) {
                 user.deleteAlbum(position);
                 user.saveUser(getApplicationContext());
-                albumList.getAdapter().notifyItemRemoved(position);
+                recyclerView.getAdapter().notifyItemRemoved(position);
             }
         });
 
@@ -67,7 +70,7 @@ public class HomePage extends AppCompatActivity implements album_recycler_view_i
                             // Rename the album
                             user.renameAlbum(position, albumName);
                             user.saveUser(getApplicationContext());
-                            albumList.getAdapter().notifyItemChanged(position);
+                            recyclerView.getAdapter().notifyItemChanged(position);
                         } else {
                             Toast.makeText(HomePage.this, "Please enter a valid album name", Toast.LENGTH_SHORT).show();
                         }
@@ -98,7 +101,7 @@ public class HomePage extends AppCompatActivity implements album_recycler_view_i
 
         Button createAlbumButton = findViewById(R.id.createAlbumButton);
         createAlbumButton.setOnClickListener((view) -> {
-                AlertDialog.Builder builder = new AlertDialog.Builder(HomePage.this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(HomePage.this);
                 builder.setTitle("Create New Album");
 
                 final EditText albumNameEditText = new EditText(HomePage.this);
@@ -120,38 +123,54 @@ public class HomePage extends AppCompatActivity implements album_recycler_view_i
                             Album newAlbum = new Album(albumName);
                             user.addAlbum(newAlbum);
                             user.saveUser(getApplicationContext());
-                            albumList.getAdapter().notifyItemInserted(user.getAlbums().size()-1);
+                            recyclerView.getAdapter().notifyItemInserted(user.getAlbums().size()-1);
                         } else {
                             Toast.makeText(HomePage.this, "Please enter a valid album name", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
 
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.cancel();
-                    }
-                });
+                builder.setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.cancel());
 
                 builder.create().show();
         });
 
 
+        Button switchToAlbumBtn = findViewById(R.id.switchButton);
 
 
         SearchView searchView = findViewById(R.id.photoFilterSearch);
-        RecyclerView recyclerView = findViewById(R.id.filteredPhotosRecyclerView);
+        adapterFilteredPhotos = new album_page_recycler_view_adapter(getApplicationContext(), filteredPhotos, this);
 
+        switchToAlbumBtn.setOnClickListener(view -> {
+            if (canSwitchToAlbums){
+                recyclerView.setAdapter(albumListAdapter);
+                canSwitchToAlbums = false;
+                searchView.setIconified(true);
+                // Optionally, clear the query text
+                searchView.setQuery("", false);
+            } else {
+                Toast.makeText(getApplicationContext(), "Already viewing albums!", Toast.LENGTH_SHORT).show();
+            }
+        });
 
-        adapter = new album_page_recycler_view_adapter(this, filteredPhotos, this);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
+        searchView.setOnSearchClickListener(v -> {
+            if (!canSwitchToAlbums){
+                canSwitchToAlbums = true;
+                filteredPhotos.clear();
+                for (Album a : user.getAlbums()){
+                    for (PhotoModel p : a.getPhotoModelsArrayList()){
+                        filteredPhotos.add(p);
+                    }
+                }
+                recyclerView.setAdapter(adapterFilteredPhotos);
+            }
+        });
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 // Perform search when user submits query
+                searchView.clearFocus(); // Clear focus from the SearchView
                 performSearch(query);
                 return true;
             }
@@ -165,18 +184,91 @@ public class HomePage extends AppCompatActivity implements album_recycler_view_i
     }
 
     void performSearch(String query) {
-//        for (Album a : user)
+        filteredPhotos.clear();
+        adapterFilteredPhotos.notifyDataSetChanged();
+            String[] newQueryAnd = query.split(" and ");
+            String[] newQueryOr = query.split(" or ");
+
+        if (newQueryAnd.length>1){
+                    for (Album a : user.getAlbums()){
+                        for (PhotoModel p : a.getPhotoModelsArrayList()){
+                            boolean firstQuery = false;
+                            boolean secondQuery = false;
+                            for (String tag : p.getTagList()){
+                                String toLower = tag.toLowerCase();
+                                String qToLow2 = newQueryAnd[1].toLowerCase();
+
+                                if (tag.equalsIgnoreCase(newQueryAnd[0])) firstQuery = true;
+                                if (toLower.startsWith(qToLow2)) secondQuery = true;
+                            }
+                            if (firstQuery&&secondQuery) {
+                                filteredPhotos.add(p);
+                                adapterFilteredPhotos.notifyOfAdd();
+                            }
+                        }
+                    }
+            } else if(newQueryOr.length>1){
+
+                for (Album a : user.getAlbums()){
+                for (PhotoModel p : a.getPhotoModelsArrayList()){
+                    boolean firstQuery = false;
+                    boolean secondQuery = false;
+                    for (String tag : p.getTagList()){
+                        String toLower = tag.toLowerCase();
+                        String qToLow2 = newQueryOr[1].toLowerCase();
+                        if (tag.equalsIgnoreCase(newQueryOr[0])) firstQuery = true;
+                        if (toLower.startsWith(qToLow2)) secondQuery = true;
+                    }
+                    if (firstQuery||secondQuery){
+                        filteredPhotos.add(p);
+                        adapterFilteredPhotos.notifyOfAdd();
+                        }
+                    }
+                }
+            }   else if (newQueryAnd.length==1&&newQueryOr.length==1){
+                    for (Album a : user.getAlbums()){
+                        for (PhotoModel p : a.getPhotoModelsArrayList()){
+                            for (String tag : p.getTagList()){
+                                String toLower = tag.toLowerCase();
+                                String qToLow = query.toLowerCase();
+                                if (toLower.startsWith(qToLow)){
+                                    filteredPhotos.add(p);
+                                    adapterFilteredPhotos.notifyOfAdd();
+                                    break;
+                                }
+                            }
+                        }
+                    }
+            }
     }
 
     @Override
     public void onPhotoClick(int position) {
-
+        PhotoModel toGoTo = adapterFilteredPhotos.photoModels.get(position);
+        for (Album a : user.getAlbums()){
+            if (a.getPhotoModelsArrayList().contains(toGoTo)){
+                Intent intent = new Intent(this, PhotoViewActivity.class);
+                intent.putExtra("photoIndex", a.getPhotoModelsArrayList().indexOf(toGoTo));
+                intent.putExtra("albumIndex", user.getAlbums().indexOf(a));
+                startActivity(intent);
+                finish();
+            }
+        }
     }
 
     @Override
     public void onDeleteClick(int position) {
-
+        PhotoModel toDelete = adapterFilteredPhotos.photoModels.get(position);
+        for (Album a : user.getAlbums()){
+            if (a.getPhotoModelsArrayList().contains(toDelete)){
+                a.getPhotoModelsArrayList().remove(toDelete);
+            }
+        }
+        user.saveUser(getApplicationContext());
+        filteredPhotos.remove(position);
+        adapterFilteredPhotos.notifyOfRemoval(position);
     }
+
 }
 
 
