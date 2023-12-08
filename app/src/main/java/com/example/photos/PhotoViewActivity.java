@@ -53,7 +53,6 @@ public class PhotoViewActivity extends AppCompatActivity implements tag_recycler
         backButton.setOnClickListener(view -> {
             Intent intent2 = new Intent(PhotoViewActivity.this, AlbumViewActivity.class);
             intent2.putExtra("clickedAlbumPos", albumPosition);
-            Log.d("poopposition", "position: " + albumPosition);
             startActivity(intent2);
             // Finish the current activity to return to the previous one
             finish();

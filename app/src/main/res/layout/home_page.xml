@@ -22,10 +22,10 @@
 
     <Button
         android:id="@+id/createAlbumButton"
-        android:layout_width="126dp"
-        android:layout_height="57dp"
+        android:layout_width="146dp"
+        android:layout_height="49dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="152dp"
+        android:layout_marginTop="172dp"
         android:onClick="OnCreateAlbumClick"
         android:text="@string/create_album"
         app:layout_constraintStart_toStartOf="parent"
@@ -36,40 +36,69 @@
 
         android:layout_width="385dp"
         android:layout_height="376dp"
-        android:layout_marginTop="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/createAlbumButton"
         app:layout_constraintVertical_bias="0.951" />
-
-    <SearchView
-        android:id="@+id/photoFilterSearch"
-        android:layout_width="209dp"
-        android:layout_height="45dp"
-        android:layout_marginStart="180dp"
-        android:layout_marginTop="12dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/FilterHint"
-        android:layout_width="357dp"
-        android:layout_height="47dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="68dp"
+        android:layout_width="354dp"
+        android:layout_height="41dp"
+        android:layout_marginTop="128dp"
         android:text="@string/filter_photos_hint"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.28"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/switchButton"
-        android:layout_width="101dp"
-        android:layout_height="54dp"
-        android:layout_marginTop="152dp"
-        android:layout_marginEnd="12dp"
+        android:layout_width="142dp"
+        android:layout_height="51dp"
+        android:layout_marginTop="172dp"
+        android:layout_marginEnd="24dp"
         android:text="@string/switch_album"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <AutoCompleteTextView
+        android:id="@+id/tag1Search"
+        android:layout_width="224dp"
+        android:layout_height="39dp"
+        android:hint="@string/tag1_suggestion"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@+id/FilterHint"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.858"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.074" />
+
+    <Spinner
+        android:id="@+id/operatorMenu"
+        android:layout_width="98dp"
+        android:layout_height="35dp"
+        app:layout_constraintBottom_toTopOf="@+id/FilterHint"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.69"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.529" />
+
+    <AutoCompleteTextView
+        android:id="@+id/tag2Search"
+        android:layout_width="224dp"
+        android:layout_height="39dp"
+        android:layout_marginBottom="12dp"
+        android:hint="@string/tag2_suggestion"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.86"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.13" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

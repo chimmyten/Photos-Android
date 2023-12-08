@@ -16,7 +16,13 @@
     <string name="scrollable_tag_list">Scrollable Tag List</string>
     <string name="tag_format_hint">(Format is [tagType]=value where tagType equals Location or People)</string>
     <string name="type_tag_here">Type Tag Here</string>
-    <string name="filter_photos_hint">Filter photos using tag value pairs, specify conjunction and disjunction using and/or (Location=x and Person=y)</string>
+    <string name="filter_photos_hint">Filter photos using tag value pairs. If only searching with one tag, please use the top box.</string>
     <string name="switch_album">Album View</string>
+    <string name="tag1_suggestion">eg. People=Bob</string>
+    <string name="tag2_suggestion">eg. Location=school</string>
+    <string-array name="logical_operators">
+        <item>and</item>
+        <item>or</item>
+    </string-array>
 
 </resources>

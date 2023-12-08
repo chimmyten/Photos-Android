@@ -8,13 +8,23 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.View;
+import android.view.WindowManager;
+
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.SearchView;
+import android.widget.Spinner;
 import android.widget.Toast;
 import android.widget.EditText;
+import android.widget.ArrayAdapter;
 
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +41,7 @@ public class HomePage extends AppCompatActivity implements album_recycler_view_i
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_page);
-
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
         user = User.loadUser(getApplicationContext());
 
@@ -143,52 +153,146 @@ public class HomePage extends AppCompatActivity implements album_recycler_view_i
         Button switchToAlbumBtn = findViewById(R.id.switchButton);
 
 
-        SearchView searchView = findViewById(R.id.photoFilterSearch);
+
+        AutoCompleteTextView tag1TextView = findViewById(R.id.tag1Search);
+        AutoCompleteTextView tag2TextView = findViewById(R.id.tag2Search);
+        List<String> tagList = new ArrayList<>();
+        for (Album a : user.getAlbums()) {
+            for (PhotoModel p : a.getPhotoModelsArrayList()) {
+                for (String tag : p.getTagList()) {
+                    tagList.add(tag);
+                }
+            }
+        }
+
+        ArrayAdapter<String> tagSearchAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, tagList);
+        tag1TextView.setAdapter(tagSearchAdapter);
+        tag1TextView.setThreshold(1);
+        tag2TextView.setAdapter(tagSearchAdapter);
+        tag2TextView.setThreshold(1);
+
+        Spinner operatorMenu = findViewById(R.id.operatorMenu);
+        ArrayAdapter<CharSequence> operatorAdapter = ArrayAdapter.createFromResource(
+                this,
+                R.array.logical_operators, // You can create this array in your resources
+                android.R.layout.simple_spinner_item
+        );
+        operatorMenu.setAdapter(operatorAdapter);
+        operatorMenu.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (tag2TextView.getText().length() == 0) {
+                    performSearch(""+tag1TextView.getText());
+                } else {
+                    performSearch(tag1TextView.getText() + " " + operatorMenu.getSelectedItem() + " " + tag2TextView.getText());
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         adapterFilteredPhotos = new album_page_recycler_view_adapter(getApplicationContext(), filteredPhotos, this);
 
         switchToAlbumBtn.setOnClickListener(view -> {
             if (canSwitchToAlbums){
                 recyclerView.setAdapter(albumListAdapter);
                 canSwitchToAlbums = false;
-                searchView.setQuery("", false);
-                searchView.setIconified(true);
-                // Optionally, clear the query text
-                searchView.clearFocus();
+                tag1TextView.setText("", false);
+                tag1TextView.clearFocus();
+                tag2TextView.setText("", false);
+                tag2TextView.clearFocus();
+                operatorMenu.clearFocus();
             } else {
                 Toast.makeText(getApplicationContext(), "Already viewing albums!", Toast.LENGTH_SHORT).show();
             }
         });
 
-        searchView.setOnSearchClickListener(v -> {
 
-            Log.d("SEARCHBAR", "search clicked");
-            if (!canSwitchToAlbums){
-                canSwitchToAlbums = true;
-                filteredPhotos.clear();
-                for (Album a : user.getAlbums()){
-                    for (PhotoModel p : a.getPhotoModelsArrayList()){
-                        filteredPhotos.add(p);
+        tag1TextView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    if (!canSwitchToAlbums){
+                        canSwitchToAlbums = true;
+                        filteredPhotos.clear();
+                        for (Album a : user.getAlbums()){
+                            for (PhotoModel p : a.getPhotoModelsArrayList()){
+                                filteredPhotos.add(p);
+                            }
+                        }
                     }
+                    recyclerView.setAdapter(adapterFilteredPhotos);
                 }
             }
-            recyclerView.setAdapter(adapterFilteredPhotos);
         });
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+        tag1TextView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
-                // Perform search when user submits query
-                searchView.clearFocus(); // Clear focus from the SearchView
-                performSearch(query);
-                return true;
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    if (!canSwitchToAlbums){
+                        canSwitchToAlbums = true;
+                        filteredPhotos.clear();
+                        for (Album a : user.getAlbums()){
+                            for (PhotoModel p : a.getPhotoModelsArrayList()){
+                                filteredPhotos.add(p);
+                            }
+                        }
+                    }
+                    recyclerView.setAdapter(adapterFilteredPhotos);
+                }
+            }
+        });
+
+        tag1TextView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
             }
 
             @Override
-            public boolean onQueryTextChange(String newText) {
-                performSearch(newText);
-                return true;
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String tag1Text = s.toString();
+                if (tag2TextView.getText().length() == 0) {
+                    performSearch(tag1Text);
+                } else {
+                    performSearch(s + " " + operatorMenu.getSelectedItem() + " " + tag2TextView.getText());
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        tag2TextView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String tag2Text = s.toString();
+                if (tag2Text.length() == 0) {
+                    performSearch("" + tag1TextView.getText());
+                } else {
+                    performSearch(tag1TextView.getText() + " " + operatorMenu.getSelectedItem() + " " + tag2Text);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
     }
+
+
 
     void performSearch(String query) {
         filteredPhotos.clear();
